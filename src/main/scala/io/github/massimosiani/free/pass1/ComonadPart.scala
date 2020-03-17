@@ -12,7 +12,7 @@ object ComonadPart {
 
   type CoAdder[A] = Cofree[CoAdderF, A]
 
-  private def coiter[F[_] : Functor, A]: (A => F[A]) => A => Cofree[F, A] = next => start => Cofree.unfold(start)(next)
+  private def coiter[F[_]: Functor, A]: (A => F[A]) => A => Cofree[F, A] = next => start => Cofree.unfold(start)(next)
 
   val mkCoAdder: Limit => Count => CoAdder[ThisState] =
     limit =>
