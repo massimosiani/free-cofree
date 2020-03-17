@@ -14,6 +14,7 @@ class ComonadPartSpec extends PropSpec {
   private val belowLimitGen: Gen[(Int, ThisState)] = for {
     limit <- Gen.choose(0, 2000)
     adder <- Gen.choose(0, 1000)
+    if limit > adder + 1
     count <- Gen.choose(0, limit - adder - 1)
   } yield (adder, (limit, count))
 
