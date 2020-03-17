@@ -1,9 +1,9 @@
 package io.github.massimosiani.free.pass2
 
-import cats.{Comonad, Functor, Representable}
+import cats.{Comonad, Eval, Functor, Representable}
 import cats.data.RepresentableStore
-import cats.free.Cofree
 import io.github.massimosiani.free.types.CoAdder.CoAdderF
+import cats.implicits._
 
 object ComonadPart {
 
@@ -19,13 +19,16 @@ object ComonadPart {
     override def tabulate[A](f: Count => A): (Limit, Count => A) = (0, f)
   }
   type Base[A] = RepresentableStore[Inside, Count, A]
-  type CofreeT[F[_], W[_], A] = Cofree[F, W[A]]
+  case class CofreeF[F[_], A, B](head: A, tail: Eval[F[B]])
+  case class CofreeT[F[_], W[_], A](runCofreeT: W[CofreeF[F, A, CofreeT[F, W, A]]])
 
   type CoAdderT[W[_], A] = CofreeT[CoAdderF, W, A]
   type CoAdder[A] = CoAdderT[Base, A]
 
-  private def coiterT[F[_]: Functor, W[_]: Comonad, A](next: W[A] => F[W[A]])(start: W[A]): CofreeT[F, W, A] =
-    Cofree.unfold(start)(next)
+  private def coiterT[F[_]: Functor, W[_]: Comonad, A](next: W[A] => F[W[A]])(start: W[A]): CofreeT[F, W, A] = {
+    val tail: W[A] => F[CofreeT[F, W, A]] = (w: W[A]) => next(w).map(coiterT(next))
+    CofreeT(start.coflatMap(w => CofreeF(w.extract, Eval.later(tail(w)))))
+  }
 
   val mkCoAdder: Limit => Count => CoAdder[Unit] =
     limit =>
