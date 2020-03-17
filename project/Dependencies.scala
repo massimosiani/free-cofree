@@ -12,13 +12,13 @@ object Dependencies {
     lazy val scalaCheckShapeless = "1.2.5"
     lazy val scalaLogging = "3.9.2"
     lazy val scalaTest = "3.1.1"
+    lazy val scalaTestPlus = "3.1.1.1"
     lazy val scalafixSortImports = "0.3.2"
   }
 
   lazy val core: Seq[Setting[_]] = deps(
     "eu.timepit" %% "refined"                 % Version.refined,
     "io.estatico" %% "newtype" % Version.newtype,
-    // "org.typelevel" %% "cats-effect" % Version.cats,
     "org.typelevel" %% "cats-free" % Version.cats,
     "org.typelevel" %% "kittens" % Version.cats
   )
@@ -31,6 +31,7 @@ object Dependencies {
 
   lazy val test: Seq[Setting[_]] = deps(
     "org.scalatest" %% "scalatest" % Version.scalaTest % Test,
+    "org.scalatestplus"          %% "scalacheck-1-14"                % Version.scalaTestPlus,
     "com.github.alexarchambault" %% "scalacheck-shapeless_1.14" % Version.scalaCheckShapeless % Test
   )
 

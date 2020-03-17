@@ -14,8 +14,4 @@ object Main extends App {
   def getLimit: Int => Int = x => runLimit(ComonadPart.mkCoAdder(x)(0))
 
   def testLimit: Int => Boolean = x => runLimit(ComonadPart.mkCoAdder(x)(0)) == x
-
-  val x = 1000
-  println(getLimit(x))
-  println(testLimit(x))
 }
