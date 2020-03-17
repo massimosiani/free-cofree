@@ -1,8 +1,8 @@
-package io.github.massimosiani.free.first
+package io.github.massimosiani.free.pass1
 
-import io.github.massimosiani.free.first.ComonadPart.CoAdder
-import io.github.massimosiani.free.first.PairingProgram.CoAdderFAdderFPairing
-import io.github.massimosiani.free.first.Pairing.CoFreeFreePairing
+import io.github.massimosiani.free.pass1.ComonadPart.CoAdder
+import io.github.massimosiani.free.pass1.PairingProgram.CoAdderFAdderFPairing
+import io.github.massimosiani.free.pass1.Pairing.CoFreeFreePairing
 import io.github.massimosiani.free.types.Adder.{functorAdder, AdderF}
 import io.github.massimosiani.free.types.CoAdder.{functorCoAdder, CoAdderF}
 

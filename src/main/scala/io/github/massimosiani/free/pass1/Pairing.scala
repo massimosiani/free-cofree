@@ -1,4 +1,4 @@
-package io.github.massimosiani.free.first
+package io.github.massimosiani.free.pass1
 
 import cats.{Functor, Id}
 import cats.free.{Cofree, Free}
