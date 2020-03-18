@@ -1,6 +1,6 @@
 package io.github.massimosiani.free.types
 
-import cats.free.Free
+import cats.free.{Free, FreeT}
 import cats.{derived, Functor}
 import cats.implicits._
 
@@ -11,6 +11,7 @@ object Adder {
   case class Clear[K](k: K) extends AdderF[K]
   case class Total[K](f: Int => K) extends AdderF[K]
 
+  type AdderT[M[_], A] = FreeT[AdderF, M, A]
   type Adder[A] = Free[AdderF, A]
 
   implicit val functorAdder: Functor[AdderF] = {
