@@ -4,23 +4,25 @@ import sbt._
 object Dependencies {
 
   object Version {
-    lazy val cats = "2.1.1"
-    lazy val kittens = "2.0.0"
-    lazy val janino = "3.1.1"
-    lazy val logbackClassic = "1.2.3"
-    lazy val newtype = "0.4.3"
-    lazy val refined = "0.9.13"
-    lazy val scalaCheckShapeless = "1.2.5"
-    lazy val scalaLogging = "3.9.2"
-    lazy val scalaTest = "3.1.1"
-    lazy val scalaTestPlus = "3.1.1.1"
-    lazy val scalafixSortImports = "0.3.2"
+    val cats = "2.1.1"
+    val catsMtl = "0.7.0"
+    val kittens = "2.0.0"
+    val janino = "3.1.1"
+    val logbackClassic = "1.2.3"
+    val newtype = "0.4.3"
+    val refined = "0.9.13"
+    val scalaCheckShapeless = "1.2.5"
+    val scalaLogging = "3.9.2"
+    val scalaTest = "3.1.1"
+    val scalaTestPlus = "3.1.1.1"
+    val scalafixSortImports = "0.3.2"
   }
 
   lazy val core: Seq[Setting[_]] = deps(
     "eu.timepit" %% "refined" % Version.refined,
     "io.estatico" %% "newtype" % Version.newtype,
     "org.typelevel" %% "cats-free" % Version.cats,
+    "org.typelevel" %% "cats-mtl-core" % Version.catsMtl,
     "org.typelevel" %% "kittens" % Version.kittens
   )
 
