@@ -11,8 +11,12 @@ object ComonadPart {
 
   type Limit = Int
   type Count = Int
-  private type Env[A] = (Limit, Count => A)
-  implicit def r: Representable.Aux[Env, Count] = new Representable[Env] {
+  type Env[A] = (Limit, Count => A)
+  object Env {
+    def apply[A](limit: Limit, f: Count => A): Env[A] = (limit, f)
+  }
+
+  private implicit def r: Representable.Aux[Env, Count] = new Representable[Env] {
     override def F: Functor[Env] = new Functor[Env] {
       override def map[A, B](fa: Env[A])(f: A => B): Env[B] = fa.copy(_2 = fa._2.andThen(f))
     }
@@ -20,7 +24,16 @@ object ComonadPart {
     override def index[A](f: Env[A]): Count => A = f._2
     override def tabulate[A](f: Count => A): Env[A] = (0, f)
   }
-  private type Base[A] = RepresentableStore[Env, Count, A]
+
+  type Base[A] = RepresentableStore[Env, Count, A]
+  object Base {
+    def apply[A](wa: Env[A], count: Count): Base[A] = RepresentableStore(wa, count)
+    implicit def baseIsEnv[A](b: Base[A]): Env[A] = b.fa
+    implicit def baseIsStore[A](b: Base[A]): StoreOps[Base, Count, A] = new StoreOps[Base, Count, A] {
+      override def pos: Count = b.index
+      override def seek(s: Count): Base[A] = b.copy(index = s)
+    }
+  }
 
   case class CofreeF[F[_], A, B](head: A, tail: Eval[F[B]])
   case class CofreeT[F[_], W[_], A](runCofreeT: W[CofreeF[F, A, CofreeT[F, W, A]]])
@@ -36,16 +49,13 @@ object ComonadPart {
   val mkCoAdder: Limit => Count => CoAdder[Unit] =
     limit =>
       count => {
-        implicit def baseIsEnv[A](b: Base[A]): Env[A] = b.fa
-        implicit def baseIsStore[A](b: Base[A]): StoreOps[Base, Count, A] = new StoreOps[Base, Count, A] {
-          override def pos: Count = b.index
-          override def seek(s: Count): Base[A] = b.copy(index = s)
-        }
+        import Base.baseIsEnv
+        import Base.baseIsStore
         def next(w: Base[Unit]): CoAdderF[Base[Unit]] = CoAdderF(coAdd(w), coClear(w), coTotal(w))
         coiterT[CoAdderF, Base, Unit](next)(RepresentableStore[Env, Count, Unit]((limit, _ => ()), count))
       }
 
-  private trait StoreOps[W[_], S, A] {
+  trait StoreOps[W[_], S, A] {
     def pos: S
     def seek(s: S): W[A]
   }
